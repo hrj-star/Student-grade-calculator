@@ -1,0 +1,193 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.*;
+import net.ucanaccess.jdbc.*;
+public class myprog extends JFrame implements ActionListener {
+ JTextField tfno,tfname,tfm1,tfm2,tfm3,tfresult,tfgrade;
+Connection cn = null;
+ResultSet rs = null;
+Statement s = null;
+public myprog() {
+getContentPane().setBackground(Color.CYAN);
+    getContentPane().setLayout(null);
+tfno = new JTextField(10);
+tfno.setBounds(246, 0, 178, 50);
+    getContentPane().add( tfno);
+   tfname = new JTextField(10);
+ tfname.setBounds(246, 50, 178, 50);
+    getContentPane().add(tfname );
+   tfm1= new JTextField(10);
+     tfm1.setBounds(246, 100, 178, 50);
+    getContentPane().add(tfm1);
+   tfm2 = new JTextField(10);
+      tfm2.setBounds(246, 150, 178, 50);
+    getContentPane().add( tfm2);
+ tfm3 = new JTextField(10);
+ tfm3.setBounds(246, 200, 178, 50);
+    getContentPane().add(tfm3);
+    tfresult = new JTextField(10);
+   tfresult.setBounds(246, 250, 178, 50);
+    getContentPane().add( tfresult );
+   tfgrade= new JTextField(10);
+   tfgrade.setBounds(246, 300, 178, 50);
+    getContentPane().add( tfgrade );
+     JLabel l = new JLabel("Enter Roll No");
+    l.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+  l.setBounds(10, 0, 237, 50);
+    getContentPane().add(l);
+ JLabel l2 = new JLabel("Enter name ");
+    l2.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+  l2.setBounds(10, 50, 237, 50);
+    getContentPane().add(l2);
+    JLabel l3 = new JLabel("Enter AM III marks ");
+    l3.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+   l3.setBounds(10, 100, 237, 50);
+    getContentPane().add(l3);
+JLabel l4 = new JLabel("Enter OOPM marks ");
+    l4.setFont(new Font("Arial Narrow", Font.BOLD, 14));  l4.setBounds(10,150, 237, 50);
+    getContentPane().add(l4);
+    JLabel l5 = new JLabel("Enter DS marks ");
+    l5.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+   l5.setBounds(10, 200, 237, 50);
+    getContentPane().add(l5);
+    JLabel l6 = new JLabel("Result ");
+    l6.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+  l6.setBounds(10, 250, 237, 50);
+    getContentPane().add(l6);
+    JLabel l7 = new JLabel("Grade ");
+    l7.setFont(new Font("Arial Narrow", Font.BOLD, 14));
+   l7.setBounds(10, 300, 237, 50);
+    getContentPane().add(l7);
+   JButton btnSubmit = new JButton("Insert");
+    btnSubmit.addMouseListener(new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+            try {
+                int num = Integer.parseInt(tfno.getText());
+               String name=tfname.getText();
+                int m1 = Integer.parseInt(tfm1.getText());
+                 int m2 = Integer.parseInt(tfm2.getText());
+                  int m3 = Integer.parseInt(tfm3.getText());
+                float  total=m1+m2+m3; 
+                 float res=((total)/300)*100;
+                   float r=res;
+                   tfresult.setText(Float.toString(r));
+                 r=Float.parseFloat(tfresult.getText());
+                 char ch;
+               float  m =Float.parseFloat(tfresult.getText());
+                if(m>=80){
+         ch = 'A';
+      }else if(m>=60 && m<80){
+         ch= 'B';
+      }
+      else if(m>=40 && m<60){
+         ch = 'C';
+      }
+      else {
+         ch= 'D';
+      }
+         String s1=String.valueOf(ch);  
+                tfgrade.setText(s1);
+                String s2=tfgrade.getText();
+               tfno.getText();
+                tfname.getText();
+                tfm1.getText();
+                tfm2.getText();
+                tfm3.getText();
+               tfresult.getText();
+               tfgrade.getText();
+                Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+                Connection cn = DriverManager.getConnection("jdbc:ucanaccess://D:\\myprog\\Db2.accdb");
+                String sql = "insert into db (sno,sname,m3,oopm,ds,result,grade) values ('"
+			+ num + "','" + name +"','" + m1+"','" + m2 + "','" + m3+"','" + r+"','"+s2+"')";
+                s = cn.createStatement();
+                s.executeUpdate(sql);
+
+cn.close();} 
+catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex); }  }});
+    btnSubmit.setFont(new Font("Arial Narrow", Font.BOLD, 11));
+    btnSubmit.setBounds(272, 400, 141, 35);
+    getContentPane().add(btnSubmit);
+  JButton btn = new JButton("Delete");
+ btn.setFont(new Font("Arial Narrow", Font.BOLD, 11));
+    btn.setBounds(272, 600, 141, 35);
+    getContentPane().add(btn);
+JComboBox cb=new JComboBox(); 
+cb.setBounds(472, 400, 141, 35); 
+ getContentPane().add(cb);
+JComboBox cb1=new JComboBox(); 
+cb1.setBounds(472,600, 141, 35); 
+ getContentPane().add(cb1);
+try{
+Connection cn = DriverManager.getConnection("jdbc:ucanaccess://D:\\myprog\\Db2.accdb");
+Statement st=cn.createStatement();
+String sql1="select * from db ";
+ResultSet rs=st.executeQuery(sql1);
+while(rs.next()){
+cb.addItem(rs.getString(1));
+cb1.addItem(rs.getString(1));
+cn.close();
+}
+
+    }catch(Exception e){
+        JOptionPane.showMessageDialog(null, "ERROR");
+    }
+cb.addItemListener(new ItemListener (){
+public void itemStateChanged(ItemEvent ae){
+if(ae.getSource()==cb){
+try{
+Connection cn = DriverManager.getConnection("jdbc:ucanaccess://D:\\myprog\\Db2.accdb");
+String sql1="select * from db where sno=?";
+PreparedStatement ps=cn.prepareStatement(sql1);
+ps.setString(1,(String)cb.getSelectedItem());
+ResultSet rs=ps.executeQuery();
+while(rs.next()){
+String add1=rs.getString("sno");
+tfno.setText(add1.toString());
+String add2=rs.getString("sname");
+tfname.setText(add2);
+String add3=rs.getString("m3");
+tfm1.setText(add3.toString());
+String add4=rs.getString("oopm");
+tfm2.setText(add4.toString());
+String add5=rs.getString("ds");
+tfm3.setText(add5.toString());
+String add6=rs.getString("result");
+tfresult.setText(add6.toString());
+String add7=rs.getString("grade");
+tfgrade.setText(add7);
+}
+cn.close();
+} 
+catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex);
+}}}});
+btn.addMouseListener(new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+if(e.getSource()==btn){
+  
+ try {
+Connection cn = DriverManager.getConnection("jdbc:ucanaccess://D:\\myprog\\Db2.accdb");
+
+String q="Select * from db where sno='"+cb1.getSelectedItem().toString()+"'";
+Statement st = cn.createStatement();
+ResultSet rs=st.executeQuery(q);
+while(rs.next()){
+ st.executeUpdate("delete from db where sno='"+cb1.getSelectedItem().toString()+"'");
+}} catch (Exception e1)
+ e1.printStackTrace();
+        }}}});}
+public static void main(String[] args) throws Exception {
+ myprog m = new myprog();
+    m.setSize(1000, 1000);
+    m.setVisible(true);
+    m.setTitle("myprog");
+    m.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    m.getContentPane().setLayout(null);}
+public void actionPerformed(ActionEvent e) {
+}}
